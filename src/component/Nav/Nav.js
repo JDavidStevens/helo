@@ -1,10 +1,31 @@
-import React from 'react';
+import React, {Component} from 'react';
+import axios from 'axios';
 import { connect } from 'react-redux';
+import { updateUserInfo } from './../../ducks/reducer';
+import {withRouter} from 'react-router';
 
-export default function Nav() {
+
+export default class Nav extends Component{
+  componentDidMount = () => {
+    axios.get('api/auth/me').then(res=>{
+      this.props.updateUserInfo(res.data)
+    })
+  }
+
+  logout(){
+    axios.get('api/auth/logout').then(res=>{
+      this.props.history.push('/')
+    })
+  }
+
+
+  
+  render(){
+const showTheLocationWithRouter=withRouter(ShowTheLocation)
+
   return (
     <div>
-      <h1>{this.props.location.classname}</h1>
+      
 
       <Link to="/dashboard">
         <button>Home</button>
@@ -18,9 +39,10 @@ export default function Nav() {
     </div>
   );
 }
+}
 
 function mapStateToProps(state) {
   return state;
 }
 
-export default connect(mapStateToProps)(Nav)
+export default connect(mapStateToProps,{updateUserInfo})(Nav)
